@@ -1,6 +1,6 @@
 use std::{collections::HashMap, io::Stdout, time::Duration};
 use holani::{mikey::video::{LYNX_SCREEN_HEIGHT, LYNX_SCREEN_WIDTH}, suzy::registers::{Joystick, Switches}};
-use ratatui::{crossterm::{self, event::{Event, KeyCode, KeyEventKind}}, layout::{Constraint, Layout}, prelude::CrosstermBackend, style::Color, symbols::Marker, text::{Line, Text}, widgets::{canvas::{Canvas, Painter, Shape}, Block, Paragraph}, Frame, Terminal};
+use ratatui::{crossterm::{self, event::{Event, KeyCode, KeyEventKind}}, layout::{Constraint, Layout}, prelude::CrosstermBackend, style::Color, symbols::Marker, widgets::canvas::{Canvas, Painter, Shape}, Terminal};
 
 use crate::runner::{runner_config::{Input, RunnerConfig}, Runner};
 
@@ -43,7 +43,7 @@ pub(crate) struct App {
     switches: Switches,
     config: RunnerConfig,
     input_tx: kanal::Sender<(u8, u8)>,
-    runner: Runner,
+    _runner: Runner,
     update_display_rx: kanal::Receiver<Vec<u8>>,
 }
 
@@ -51,7 +51,7 @@ impl App {
     pub fn new(config: RunnerConfig) -> Self {
 
         let mut runner = Runner::new(config.clone());
-        let (input_tx, update_display_rx, rotation) = runner.initialize_thread();
+        let (input_tx, update_display_rx, _rotation) = runner.initialize_thread();
     
         Self {
             keyboard_frames: HashMap::new(),
@@ -59,7 +59,7 @@ impl App {
             switches: Switches::empty(),
             config,
             input_tx,
-            runner,
+            _runner: runner,
             update_display_rx,
         }
     }
@@ -69,7 +69,6 @@ impl App {
         let mut exit = false;
         while !exit {
             exit = self.handle_keyboard();
-            let j = self.joystick.bits();
             if let Ok(Some(rgb_buffer)) = display_rx.try_recv() {           
                 terminal.draw(move |f| {
                     let [_, main] = Layout::vertical([Constraint::Length(1), Constraint::Fill(1)]).areas(f.area());
