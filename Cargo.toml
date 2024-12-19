@@ -1,10 +1,10 @@
 [package]
 name = "holani-tui"
-version = "0.9.4"
+version = "0.9.6"
 edition = "2021"
 
 [dependencies]
-holani = { git = "https://github.com/LLeny/holani.git", tag = "0.9.4", features = [
+holani = { git = "https://github.com/LLeny/holani.git", tag = "0.9.6", features = [
   "comlynx_shared_memory",
 ] }
 ratatui = "0.29"
